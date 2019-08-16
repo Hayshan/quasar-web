@@ -92,6 +92,7 @@ module.exports = function (ctx) {
 
       // Quasar plugins
       plugins: [
+        'LocalStorage',
         'Notify'
       ]
     },
@@ -112,14 +113,7 @@ module.exports = function (ctx) {
           // 添加自己的别名
           'vue$': 'vue/dist/vue.esm.js',
           '@': path.resolve('./src'),
-          '~': path.resolve('./node_modules'),
-          'api': path.resolve('./src/api'),
-          'common': path.resolve('./src/common'),
-          'directives': path.resolve('./src/directives'),
-          'filters': path.resolve('./src/filters'),
-          'router': path.resolve('./src/router'),
-          'store': path.resolve('./src/store'),
-          'utils': path.resolve('./src/utils')
+          '~': path.resolve('./node_modules')
         }
         cfg.module.rules.push({
           enforce: 'pre',
