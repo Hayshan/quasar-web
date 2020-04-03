@@ -1,55 +1,52 @@
-const routes = [
+import Layout from 'layouts'
+
+export const constantRoutes = [
+  {
+    path: '/redirect',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '/redirect/:path*',
+        component: () => import('pages/redirect/index')
+      }
+    ]
+  },
+
+  {
+    path: '/login',
+    component: () => import('pages/login/index'),
+    hidden: true
+  },
+
+  {
+    path: '/404',
+    component: () => import('pages/error/404'),
+    hidden: true
+  },
+
   {
     path: '/',
-    component: () => import('layouts/Layout.vue'),
-    children: readModuleInfo()
+    component: Layout,
+    redirect: '/dashboard',
+    children: [
+      {
+        path: 'dashboard',
+        name: 'Dashboard',
+        component: () => import('pages/dashboard/index'),
+        meta: { title: '主页', icon: 'dashboard' }
+      }
+    ]
   }
 ]
 
-function readModuleInfo () {
-  let files = require.context('pages', true, /\/app\.json$/)
-  return createRoutes(files)
-}
-
-function createRoutes (files) {
-  let configRoutes = []
-
-  files.keys().forEach(file => {
-    let keys = file
-      .replace(/\/modules/g, '')
-      .replace(/\/app\.json$/, '')
-      .replace(/\/{2,}/g, '/')
-      .split('/')
-      .slice(1)
-
-    let info = files(file)
-
-    let route = {
-      name: info.route.name || info.route.path,
-      path: info.route.path,
-      meta: Object.assign({ module: info.name }, info.route.meta),
-      component: () => import(`@/pages/${file.replace(/^\.\//, '').replace(/\/app\.json$/, '')}/webapp/${info.route.component || 'Index'}.vue`)
-    }
-
-    let routes = configRoutes
-    keys.forEach((key, i) => {
-      let child = routes.find(parentRoute => parentRoute.meta && parentRoute.meta.module === key)
-      if (child) {
-        child.children = child.children || []
-        routes = child.children
-      }
-    })
-    routes.push(route)
-  })
-  return configRoutes
-}
+export const asyncRoutes = [
+]
 
 // Always leave this as last one
 if (process.env.MODE !== 'ssr') {
-  routes.push({
+  asyncRoutes.push({
     path: '*',
-    component: () => import('pages/error/Error404.vue')
+    component: () => import('pages/error/404.vue')
   })
 }
-
-export default routes

@@ -1,7 +1,11 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 
-var path = require('path')
+const path = require('path')
+
+function resolve (dir) {
+  return path.join(__dirname, dir)
+}
 
 module.exports = function (ctx) {
   return {
@@ -23,7 +27,6 @@ module.exports = function (ctx) {
       // 'eva-icons',
       // 'themify',
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
-
       'roboto-font', // optional, you are not bound to it
       'material-icons' // optional, you are not bound to it
     ],
@@ -112,8 +115,8 @@ module.exports = function (ctx) {
           ...cfg.resolve.alias,
           // 添加自己的别名
           'vue$': 'vue/dist/vue.esm.js',
-          '@': path.resolve('./src'),
-          '~': path.resolve('./node_modules')
+          '@': resolve('./src'),
+          '~': resolve('./node_modules')
         }
         cfg.module.rules.push({
           enforce: 'pre',
