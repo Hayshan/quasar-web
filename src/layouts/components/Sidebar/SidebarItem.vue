@@ -4,7 +4,6 @@
       <q-item v-if="onlyOneChild.meta" class="sidebar-item" v-ripple clickable :to="resolvePath(onlyOneChild.path)">
         <q-item-section avatar>
           <q-icon :name="onlyOneChild.meta.icon || (item.meta && item.meta.icon)" />
-          <svg-icon :icon-class="onlyOneChild.meta.icon || (item.meta && item.meta.icon)"></svg-icon>
         </q-item-section>
         <q-item-section>
           <q-item-label>{{ onlyOneChild.meta.title }}</q-item-label>

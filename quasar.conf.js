@@ -13,7 +13,8 @@ module.exports = function (ctx) {
     // --> boot files are part of "main.js"
     boot: [
       'i18n',
-      'axios'
+      'axios',
+      'icons'
     ],
 
     css: [
@@ -109,25 +110,68 @@ module.exports = function (ctx) {
       // gzip: true,
       // analyze: true,
       // extractCSS: false,
-      extendWebpack (cfg) {
-        cfg.resolve.alias = {
-          // 添加现有的别名
-          ...cfg.resolve.alias,
-          // 添加自己的别名
-          'vue$': 'vue/dist/vue.esm.js',
-          '@': resolve('./src'),
-          '~': resolve('./node_modules')
-        }
-        cfg.module.rules.push({
-          enforce: 'pre',
-          test: /\.(js|vue)$/,
-          loader: 'eslint-loader',
-          exclude: /node_modules/,
-          options: {
-            formatter: require('eslint').CLIEngine.getFormatter('stylish')
-          }
-        })
+      chainWebpack (chain, { isServer, isClient }) {
+        chain.resolve.alias
+          .set('vue$', 'vue/dist/vue.esm.js')
+        chain.resolve.alias
+          .set('@', resolve('./src'))
+        chain.resolve.alias
+          .set('~', resolve('./node_modules'))
+        chain.module.rule('eslint')
+          .test(/\.(js|vue)$/)
+          .enforce('pre')
+          .exclude.add((/[\\/]node_modules[\\/]/))
+          .end()
+          .use('eslint-loader')
+          .loader('eslint-loader')
+        chain.module
+          .rule('images')
+          .exclude.add(resolve('src/icons'))
+          .end()
+        chain.module
+          .rule('icons')
+          .test(/\.svg$/)
+          .include.add(resolve('src/icons'))
+          .end()
+          .use('svg-sprite-loader')
+          .loader('svg-sprite-loader')
+          .options({
+            symbolId: 'svg-icon-[name]'
+          })
+          .end()
       }
+      // extendWebpack (cfg) {
+      //   cfg.resolve.alias = {
+      //     // 添加现有的别名
+      //     ...cfg.resolve.alias,
+      //     // 添加自己的别名
+      //     vue$: 'vue/dist/vue.esm.js',
+      //     '@': resolve('./src'),
+      //     '~': resolve('./node_modules')
+      //   }
+      //   cfg.module.rules.push({
+      //     enforce: 'pre',
+      //     test: /\.(js|vue)$/,
+      //     loader: 'eslint-loader',
+      //     exclude: /node_modules/,
+      //     options: {
+      //       formatter: require('eslint').CLIEngine.getFormatter('stylish')
+      //     }
+      //   })
+      //   cfg.module.rules[2].exclude = [resolve('./src/icons')]
+      //   cfg.module.rules.push({
+      //     test: /\.svg$/,
+      //     include: [resolve('./src/icons')],
+      //     use: [
+      //       {
+      //         loader: 'svg-sprite-loader',
+      //         options: {
+      //           symbolId: 'svg-icon-[name]'
+      //         }
+      //       }
+      //     ]
+      //   })
+      // }
     },
 
     devServer: {
@@ -156,29 +200,29 @@ module.exports = function (ctx) {
         theme_color: '#027be3',
         icons: [
           {
-            'src': 'statics/icons/icon-128x128.png',
-            'sizes': '128x128',
-            'type': 'image/png'
+            src: 'statics/icons/icon-128x128.png',
+            sizes: '128x128',
+            type: 'image/png'
           },
           {
-            'src': 'statics/icons/icon-192x192.png',
-            'sizes': '192x192',
-            'type': 'image/png'
+            src: 'statics/icons/icon-192x192.png',
+            sizes: '192x192',
+            type: 'image/png'
           },
           {
-            'src': 'statics/icons/icon-256x256.png',
-            'sizes': '256x256',
-            'type': 'image/png'
+            src: 'statics/icons/icon-256x256.png',
+            sizes: '256x256',
+            type: 'image/png'
           },
           {
-            'src': 'statics/icons/icon-384x384.png',
-            'sizes': '384x384',
-            'type': 'image/png'
+            src: 'statics/icons/icon-384x384.png',
+            sizes: '384x384',
+            type: 'image/png'
           },
           {
-            'src': 'statics/icons/icon-512x512.png',
-            'sizes': '512x512',
-            'type': 'image/png'
+            src: 'statics/icons/icon-512x512.png',
+            sizes: '512x512',
+            type: 'image/png'
           }
         ]
       }
